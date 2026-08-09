@@ -1,6 +1,7 @@
 # Olist SQL Project — Final Approved Queries (Reorganized)
 
 USE olist;
+
 ## A. Customer & Geography Analysis
 
 -- 1. Which states have the highest number of customers?
@@ -79,7 +80,7 @@ LIMIT 10;
 
 ## B. Order & Logistics Performance
 
-### 1. What is the average time from purchase to delivery?
+-- 1. What is the average time from purchase to delivery?
 -- Delivery time is a key metric for logistics efficiency. 
 -- This query computes the average duration between order placement and delivery.
 SELECT
@@ -93,7 +94,7 @@ WHERE order_delivered_customer_date IS NOT NULL
   AND order_delivered_customer_date >= order_purchase_timestamp;
 
 
-### 2. What is the difference between estimated and actual delivery?
+-- 2. What is the difference between estimated and actual delivery?
 -- This helps measure delivery accuracy and customer experience. The query returns delays or early deliveries for every order.
 SELECT
   order_id,
@@ -108,7 +109,7 @@ WHERE order_delivered_customer_date IS NOT NULL
   AND order_estimated_delivery_date IS NOT NULL;
 
 
-### 3. How many orders were delivered late?
+-- 3. How many orders were delivered late?
 -- Late deliveries directly impact customer satisfaction. This query counts all orders delivered after the estimated delivery date.
 SELECT
   COUNT(*) AS late_delivered_orders
@@ -118,7 +119,7 @@ WHERE order_delivered_customer_date IS NOT NULL
   AND order_delivered_customer_date > order_estimated_delivery_date;
 
 
-### 4. How long do deliveries actually take vs estimates? 
+-- 4. How long do deliveries actually take vs estimates? 
 -- This query prepares delivery duration metrics used for SLA and delay analysis. 
 -- It computes actual delivery days and compares them with estimated delivery timelines.
 SELECT
@@ -136,7 +137,7 @@ WHERE order_purchase_timestamp IS NOT NULL
   AND order_estimated_delivery_date IS NOT NULL;
 
 
-### 5. Which sellers have the best delivery performance?
+-- 5. Which sellers have the best delivery performance?
 SELECT
   s.seller_id,
   ROUND(AVG(DATEDIFF(
@@ -154,19 +155,8 @@ WHERE o.order_status = 'delivered'
 GROUP BY s.seller_id
 ORDER BY average_shipping_time_days ASC;
 
--- 5. Which sellers have the best delivery performance?
--- This identifies sellers who ship quickly, helping improve marketplace quality. The query calculates average shipping time between approval and carrier pickup.
-SELECT oi.seller_id,
-ROUND(AVG(TIMESTAMPDIFF(HOUR, order_approved_at, order_delivered_carrier_date)),2) AS avg_shippind_time FROM orders o
-JOIN order_items oi
-ON o.order_id = oi.order_id
-WHERE o.order_approved_at IS NOT NULL
-AND o.order_delivered_carrier_date IS NOT NULL
-AND order_approved_at <=order_delivered_carrier_date
-GROUP BY oi.seller_id
-ORDER BY avg_shippind_time ASC;
 
-### 6. Which sellers have the worst delivery delays?
+-- 6. Which sellers have the worst delivery delays?
 -- Slow sellers impact overall marketplace ratings and logistics cost. This query lists sellers with the longest average shipping duration.
 SELECT
   oi.seller_id,
@@ -184,8 +174,7 @@ WHERE o.order_status = 'delivered'
 GROUP BY oi.seller_id
 ORDER BY average_shipping_time_days DESC;
 
-
-### 7. Which states experience the slowest deliveries?
+-- 7. Which states experience the slowest deliveries?
 -- Delivery time varies by geography due to distance and logistics capacity. This query calculates average delivery times per state.
 SELECT c.customer_state,
 ROUND(AVG(DATEDIFF(o.order_delivered_customer_date, o.order_purchase_timestamp)),2) AS avg_delivery_time FROM customers c
@@ -216,7 +205,7 @@ AND o.order_purchase_timestamp <= o.order_delivered_customer_date
 GROUP BY p.product_category_name, pct.product_category_name_english
 ORDER BY delivery_time DESC;
 
----
+
 
 ## C. Product & Category Analytics
 
@@ -334,7 +323,6 @@ GROUP BY p.product_category_name, pct.product_category_name_english
 ORDER BY revenue_after_freight DESC
 LIMIT 10 ;
 
----
 
 ## D. Payment Analysis
 
@@ -401,7 +389,6 @@ JOIN orders_total ot
 ON op.order_id = ot.order_id
 GROUP BY op.payment_type
 ORDER BY average_order_vaule_par_payments DESC ;
-
 
 
 
