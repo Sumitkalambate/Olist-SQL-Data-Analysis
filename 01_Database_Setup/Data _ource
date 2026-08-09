@@ -1,0 +1,7 @@
+This project uses publicly available datasets from Kaggle:
+
+Olist E-Commerce Dataset
+https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
+Contains orders, customers, sellers, payments, products, and reviews.
+
+The datasets originate from different operational systems and are treated as separate sources during ingestion.
