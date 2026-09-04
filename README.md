@@ -95,7 +95,7 @@ Olist-SQL-Data-Analysis/
 │   └── 6.Business_Analysis.sql
 │
 └── 06_PowerBI_Dashboard/
-    └── Olist_PowerBI_Dashboard.pbix
+    └── Olist_PowerBI_Dashboard
 ```
 
 ---
