@@ -1,10 +1,12 @@
-# 🛒 Olist Brazilian E-Commerce — SQL Data Analysis Project
+# 🛒 Olist Brazilian E-Commerce — SQL & Power BI Data Analysis Project
 
 ## 📌 Project Overview
 
-This project analyzes the **Olist Brazilian E-Commerce dataset** using **MySQL**.
+This project analyzes the **Olist Brazilian E-Commerce dataset** using **MySQL** and **Microsoft Power BI**.
 
-The project is designed to simulate a real-world **Data Analyst workflow**: starting with database and table creation, loading raw CSV files, validating data quality, performing exploratory analysis, and finally answering business questions using SQL.
+The project is designed to simulate a real-world **Data Analyst workflow**: starting with database and table creation, loading raw CSV files, validating data quality, performing exploratory analysis, answering business questions using SQL, and finally building an **interactive Power BI dashboard** to visualize and communicate the insights.
+
+**Raw Data → MySQL Database → Data Validation → SQL Analysis → Power BI Data Modeling → DAX Measures → Interactive Dashboards → Business Insights**
 
 The main objective is to transform raw e-commerce data into meaningful business insights related to:
 
@@ -25,7 +27,7 @@ Olist is a Brazilian e-commerce marketplace that connects customers with sellers
 
 The business has data covering customers, orders, products, sellers, payments, reviews, and geographic information. However, raw transactional data alone does not directly answer important business questions.
 
-The purpose of this project is to use SQL to analyze the Olist marketplace and answer questions such as:
+The purpose of this project is to use SQL — and then Power BI — to analyze the Olist marketplace and answer questions such as:
 
 - Which states and cities have the highest customer and order activity?
 - What percentage of customers make repeat purchases?
@@ -39,13 +41,13 @@ The purpose of this project is to use SQL to analyze the Olist marketplace and a
 - How does delivery performance relate to customer review scores?
 - Which product categories have higher freight costs or delivery issues?
 
-The overall goal is to identify **actionable business insights using SQL** that could help an e-commerce marketplace improve customer retention, sales performance, logistics, seller performance, and customer satisfaction.
+The overall goal is to identify **actionable business insights using SQL and Power BI** that could help an e-commerce marketplace improve customer retention, sales performance, logistics, seller performance, and customer satisfaction.
 
 ---
 
 # 🧭 Project Approach
 
-The project follows a structured Data Analyst workflow.
+The project follows a structured Data Analyst workflow, from raw data to a final interactive dashboard.
 
 ```text
 Raw CSV Data
@@ -58,7 +60,11 @@ Data Validation
       ↓
 Exploratory Data Analysis
       ↓
-Business Analysis
+Business Analysis (SQL)
+      ↓
+Power BI Data Modeling & DAX
+      ↓
+Interactive Dashboard
       ↓
 Business Insights
 ```
@@ -72,15 +78,25 @@ Olist-SQL-Data-Analysis/
 │
 ├── README.md
 │
-├── 1.Table_Creation.sql
-├── 2.Data_load.sql
-├── 3.Data_Validation.sql
-├── 4.Data_Validatiion2.sql
-├── 5.ExploratoryDataAnalysis.sql
-└── 6.Business_Analysis.sql
+├── 01_Database_Setup/
+│   └── 1.Table_Creation.sql
+│
+├── 02_Data_Loading/
+│   └── 2.Data_load.sql
+│
+├── 03_Data_Validation/
+│   ├── 3.Data_Validation.sql
+│   └── 4.Data_Validatiion2.sql
+│
+├── 04_Exploratory_Analysis/
+│   └── 5.ExploratoryDataAnalysis.sql
+│
+├── 05_Business_Analysis/
+│   └── 6.Business_Analysis.sql
+│
+└── 06_PowerBI_Dashboard/
+    └── Olist_PowerBI_Dashboard.pbix
 ```
-
-Each SQL file represents a separate stage of the project.
 
 ---
 
@@ -111,26 +127,10 @@ The dataset contains information about orders placed on the Olist marketplace an
 # 1️⃣ Table Creation
 
 ### File
-
 `1.Table_Creation.sql`
 
 ### Objective
-
-Create the MySQL database and relational tables required for the Olist dataset.
-
-The database contains nine main tables:
-
-```text
-customers
-orders
-order_items
-order_payments
-order_reviews
-products
-sellers
-geolocation
-product_category_name_translation
-```
+Create the MySQL database and relational tables required for the Olist dataset — `customers`, `orders`, `order_items`, `order_payments`, `order_reviews`, `products`, `sellers`, `geolocation`, and `product_category_name_translation`.
 
 ### Key Database Relationships
 
@@ -155,20 +155,10 @@ customers
 # 2️⃣ Data Loading
 
 ### File
-
 `2.Data_load.sql`
 
 ### Objective
-
-Load the raw Olist CSV files into the corresponding MySQL tables.
-
-The script uses:
-
-```sql
-LOAD DATA LOCAL INFILE
-```
-
-Each CSV file is loaded separately.
+Load the raw Olist CSV files into the corresponding MySQL tables using `LOAD DATA LOCAL INFILE`.
 
 ### CSV files loaded
 
@@ -186,21 +176,13 @@ olist_geolocation_dataset.csv
 
 ### Before Running
 
-Replace:
-
-```text
-path_of_customers.csv
-```
-
-with the actual location of the CSV file on your system.
-
-For example:
+Replace the placeholder path:
 
 ```sql
 LOAD DATA LOCAL INFILE 'path_of_customers.csv'
 ```
 
-can be changed to:
+with your actual local file location, for example:
 
 ```sql
 LOAD DATA LOCAL INFILE 'D:/your_folder/olist_customers_dataset.csv'
@@ -215,383 +197,177 @@ The same process should be followed for the other CSV files.
 # 3️⃣ Data Validation
 
 ### File
-
 `3.Data_Validation.sql`
 
 ### Objective
-
-Check whether the imported data is complete, valid, and suitable for analysis.
-
-The validation includes checks for:
-
-### Customers
-
-- NULL values
-- Empty values
-- Duplicate `customer_id`
-- Repeated `customer_unique_id`
-- Invalid state codes
-- Invalid ZIP-code values
-- Customers without orders
-- Orders referencing missing customers
-
-### Orders
-
-- Missing order status
-- Missing timestamps
-- Duplicate order IDs
-- Invalid order statuses
-- Referential consistency
-- Timestamp-related issues
-
-The purpose of this stage is to identify data-quality issues **before performing business analysis**.
+Check whether the imported data is complete, valid, and suitable for analysis — including NULL values, duplicates, invalid state/ZIP codes, orphaned records, and timestamp issues across customers and orders.
 
 ---
 
 # 4️⃣ Advanced Data Validation
 
 ### File
-
 `4.Data_Validatiion2.sql`
 
 ### Objective
-
-Perform deeper validation and logical consistency checks across the complete dataset.
-
-The checks cover:
-
-- Customers
-- Orders
-- Order items
-- Products
-- Sellers
-- Payments
-- Reviews
-- Geolocation
-- Product-category translation
-
-Examples of validation performed include:
-
-- NULL-value checks
-- Duplicate checks
-- Valid state-code checks
-- Invalid ZIP-code checks
-- Invalid product dimensions
-- Invalid product weights
-- Invalid prices
-- Invalid freight values
-- Payment validation
-- Installment validation
-- Review-score validation
-- Date and timestamp consistency
-- Referential integrity checks
-- Geographic data validation
-- Category translation validation
-
-This stage provides a deeper level of data-quality assurance before analysis.
+Perform deeper validation and logical consistency checks across the complete dataset — customers, orders, order items, products, sellers, payments, reviews, geolocation, and category translation — including invalid dimensions, weights, prices, freight values, installments, review scores, and referential integrity.
 
 ---
 
 # 5️⃣ Exploratory Data Analysis
 
 ### File
-
 `5.ExploratoryDataAnalysis.sql`
 
 ### Objective
-
-Understand the overall structure, volume, and behavior of the Olist marketplace before answering detailed business questions.
-
-## Customer Analysis
-
-The analysis includes:
-
-- Total customers
-- Customers by state
-- Customers by city
-- Top 10 customer cities
-- Monthly customer acquisition
-
-## Order Analysis
-
-The analysis includes:
-
-- Total orders
-- Monthly order volume
-- Yearly order volume
-- Average daily orders
-- Cancelled orders
-- Successfully delivered orders
-- Order-status distribution
-
-## Product Analysis
-
-The analysis includes:
-
-- Number of product categories
-- Products per category
-- Largest product categories
-- Smallest product categories
-
-## Seller Analysis
-
-The analysis includes:
-
-- Total sellers
-- Sellers by state
-- Seller distribution
-
-## Payment Analysis
-
-The analysis includes:
-
-- Total payment value
-- Average payment value
-- Highest payment value
-- Lowest payment value
-- Installment distribution
-- Payment behavior
-
-This stage establishes the baseline KPIs and helps identify areas requiring deeper business analysis.
+Understand the overall structure, volume, and behavior of the Olist marketplace before answering detailed business questions — covering customer counts and acquisition, order volume and status, product category distribution, seller distribution, and payment behavior.
 
 ---
 
-# 6️⃣ Business Analysis
+# 6️⃣ Business Analysis (SQL)
 
 ### File
-
 `6.Business_Analysis.sql`
 
 ### Objective
+Answer real-world business questions and convert SQL results into business insights, organized into five areas:
 
-Answer real-world business questions and convert SQL results into business insights.
-
-The business analysis is divided into the following areas.
-
----
-
-## A. 👥 Customer & Geography Analysis
-
-Questions analyzed include:
-
-- Which states have the highest number of customers?
-- Which cities generate the most orders?
-- What percentage of customers return for repeat purchases?
-- What is the average number of orders per customer?
-- Which states contribute the highest revenue?
-- Who are the top-spending customers?
-
-### Business Value
-
-This analysis helps understand:
-
-- Customer concentration
-- Regional demand
-- Customer loyalty
-- Customer purchasing behavior
-- High-value customers
-- High-revenue regions
+- **👥 Customer & Geography Analysis** — customer concentration, repeat purchase rate, top-spending customers, revenue by state
+- **🚚 Order & Logistics Analysis** — delivery time, late deliveries, seller delivery performance, regional delays
+- **📦 Product & Category Analysis** — units sold, revenue by category, pricing, freight cost patterns
+- **💳 Payment Analysis** — payment type preference, installment behavior, transaction value
+- **⭐ Review & Customer Satisfaction Analysis** — average review scores, seller/category ratings, impact of late delivery on satisfaction
 
 ---
 
-## B. 🚚 Order & Logistics Analysis
+# 📊 Power BI Dashboard
 
-Questions analyzed include:
+The SQL analysis was extended into an interactive **Power BI dashboard** containing **three pages**:
 
-- What is the average time from purchase to delivery?
-- What is the difference between estimated and actual delivery?
-- How many orders were delivered late?
-- Which sellers have better delivery performance?
-- Which regions experience longer delivery times?
-- Which categories have higher late-delivery rates?
+1. **Summary**
+2. **Customers**
+3. **Orders**
 
-### Business Value
+The dashboard uses KPI cards, bar charts, line charts, donut charts, and combined column/line visuals to communicate business performance, built on a data model developed in Power Query with DAX measures for core KPIs.
 
-This helps identify:
+## 1. 📈 Summary Dashboard
 
-- Delivery bottlenecks
-- Logistics problems
-- Seller performance differences
-- Regions requiring operational attention
-- Potential customer-experience issues
+Provides an overall view of Olist e-commerce performance.
 
----
+### Key KPIs
 
-## C. 📦 Product & Category Analysis
+- **Total Revenue:** 13.59M
+- **Total Orders:** 99K
+- **Total Customers:** 96K
+- **Average Review Score:** 4.09
+- **On-Time Delivery:** 92.13%
+- **Average Order Value:** 137.75
+- **Average Delivery Days:** 12.50
 
-Questions analyzed include:
+### Visual Analysis
 
-- Which categories sell the most units?
-- Which categories generate the highest revenue?
-- What is the average price by category?
-- Which categories have higher freight charges?
-- Is there a relationship between product weight and price?
-- Which categories have higher late-delivery percentages?
+**Top 5 Sold Product Categories**
 
-### Business Value
+1. bed_bath_table – 11.1K
+2. health_beauty – 9.7K
+3. sports_leisure – 8.6K
+4. furniture_decor – 8.3K
+5. computers_accessories – 7.8K
 
-This helps understand:
+**Monthly Revenue Trend** — highest monthly revenue is approximately 1.50M in May; lowest is approximately 0.62M in September.
 
-- Product demand
-- Revenue-driving categories
-- Pricing patterns
-- Shipping-cost patterns
-- Product-category performance
+**Payment Type Preference**
 
----
+- Credit Card – 76.8K (73.92%)
+- Boleto – 19.78K (19.04%)
+- Voucher – 5.78K (5.56%)
 
-## D. 💳 Payment Analysis
+**Delivery Performance** — approximately 92.13% of orders delivered on time; 7.87% delivered late.
 
-Questions analyzed include:
+## 2. 👥 Customers Dashboard
 
-- Which payment types are most commonly used?
-- How are installment payments distributed?
-- How many orders use multiple installments?
-- Which payment methods generate the highest transaction value?
-- What is the average payment value?
+Focuses on customer acquisition, retention, geography, and payment behavior.
 
-### Business Value
+### Key KPIs
 
-This helps understand:
+- **Total Customers:** 96K
+- **Total Revenue:** 13.59M
+- **Repeat Customers:** 3K
+- **Retention Rate:** 3.12%
 
-- Customer payment preferences
-- Installment behavior
-- Payment transaction patterns
-- Potential opportunities for payment optimization
+### Visual Analysis
 
----
+**New Customer Acquisition Over Time** — stronger acquisition in March (9.75K), May (10.43K), July (10.17K), and August (10.70K).
 
-## E. ⭐ Review & Customer Satisfaction Analysis
+**New vs Returning Customers**
 
-Questions analyzed include:
+- New Customers: 3K (3.12%)
+- Repeat Customers: 93K (96.88%)
 
-- What is the average review score?
-- Which sellers receive the best and worst ratings?
-- Which categories receive lower ratings?
-- Do late deliveries affect customer review scores?
-- How long do customers take to submit reviews?
+> Note: These labels and values are presented as shown in the dashboard.
 
-### Business Value
+**Top 10 Cities Contributing Customers**
 
-This helps understand:
+1. São Paulo – 14.98K
+2. Rio de Janeiro – 6.62K
+3. Belo Horizonte – 2.67K
+4. Brasília – 2.07K
+5. Curitiba – 1.47K
+6. Campinas – 1.40K
+7. Porto Alegre – 1.33K
+8. Salvador – 1.21K
+9. Guarulhos – 1.15K
+10. São Bernardo do Campo – 0.91K
 
-- Customer satisfaction
-- Seller quality
-- Product-category satisfaction
-- Potential relationship between logistics and customer experience
+## 3. 📦 Orders Dashboard
 
----
+Focuses on order volume, delivery performance, delivery speed, and payment installments.
 
-# 📊 Findings & Business Insights
+### Key KPIs
 
-The SQL analysis is designed to produce findings that can be directly connected to business decisions.
+- **Total Units Sold:** 113K
+- **Average Product Price:** 120.65
+- **Average Shipping Cost:** 19.99
+- **Average Delivery Days:** 12.50
+- **On-Time Delivery:** 92.13%
+- **Average Order Value:** 137.75
 
-## Customer Insights
+### Visual Analysis
 
-The analysis identifies the regions with the largest customer base and measures repeat purchasing behavior.
+**Order Volume vs On-Time Delivery by Day of Week**
 
-A key retention metric is:
+| Day | Orders | On-Time Delivery |
+|---|---:|---:|
+| Monday | 16.20K | 91.22% |
+| Tuesday | 15.96K | 91.76% |
+| Wednesday | 15.55K | 92.44% |
+| Thursday | 14.76K | 92.66% |
+| Friday | 14.12K | 91.81% |
+| Saturday | 10.89K | 92.63% |
+| Sunday | 11.96K | 92.72% |
 
-```text
-Repeat Customer Rate =
-Customers with more than one order
------------------------------------- × 100
-Customers who placed at least one order
-```
+**Delivery Speed Distribution** — orders categorized into Very Slow, Slow, Normal, and Fast.
 
-This helps determine which regions have stronger customer loyalty.
-
----
-
-## Revenue Insights
-
-Revenue is analyzed by state, customer, product category, and other business dimensions.
-
-The analysis identifies:
-
-- High-revenue states
-- Highest-spending customers
-- Revenue-generating product categories
-- Sales concentration across regions
-
-These results can help prioritize regional marketing and customer-retention strategies.
+**Distribution of Orders by Number of Installments** — the largest group is 1 installment, with approximately 52.55K orders, followed by 2 and 3 installments.
 
 ---
 
-## Delivery Insights
+# 🔍 Key Business Insights
 
-Delivery performance is measured by comparing:
-
-```text
-Actual Delivery Date
-        vs.
-Estimated Delivery Date
-```
-
-Late deliveries are identified using the difference between actual and estimated delivery dates.
-
-This helps determine whether logistics performance may be contributing to customer dissatisfaction.
-
----
-
-## Product Insights
-
-Product categories are compared using:
-
-- Units sold
-- Revenue
-- Average price
-- Freight value
-- Late-delivery rate
-
-This helps identify both high-performing categories and categories that may require operational attention.
-
----
-
-## Seller Insights
-
-Seller performance is evaluated using:
-
-- Number of orders
-- Revenue
-- Delivery performance
-- Average review score
-
-This allows sellers to be compared from both operational and customer-satisfaction perspectives.
-
----
-
-## Payment Insights
-
-Payment analysis identifies the most commonly used payment methods and installment patterns.
-
-This can help understand customer payment preferences and purchasing behavior.
-
----
-
-## Customer Satisfaction Insights
-
-Review scores are analyzed against delivery performance and seller/category characteristics.
-
-One important business question is whether:
-
-```text
-Late Delivery
-      ↓
-Lower Customer Satisfaction
-      ↓
-Lower Review Score
-```
-
-The SQL analysis investigates this relationship using actual order and review data.
+- Olist generated approximately **13.59M in total revenue** across **99K orders** and **96K customers**.
+- **Credit card** is the most preferred payment method.
+- **bed_bath_table** is the highest-selling product category among the top five.
+- **São Paulo** contributes the largest number of customers among the displayed cities.
+- Overall **on-time delivery performance is 92.13%**, with an average delivery time of **12.50 days**.
+- Average order value is **137.75**.
+- Customers commonly use **1 installment** for their purchases.
+- The dashboard highlights noticeable monthly variation in both revenue and customer acquisition.
 
 ---
 
 # ⚠️ Important Analytical Limitation
 
-The Olist dataset does **not** contain the actual product acquisition/manufacturing cost.
-
-Therefore, actual business profit cannot be calculated from this dataset.
+The Olist dataset does **not** contain the actual product acquisition/manufacturing cost. Therefore, actual business profit cannot be calculated from this dataset.
 
 For category-level analysis, the project uses:
 
@@ -599,51 +375,34 @@ For category-level analysis, the project uses:
 Profitability Proxy = Product Price - Freight Value
 ```
 
-This should **not** be interpreted as actual company profit.
-
-It is only a proxy for analyzing the amount remaining after freight cost.
+This should **not** be interpreted as actual company profit — it is only a proxy for the amount remaining after freight cost.
 
 ---
 
 # 🧠 SQL Concepts Demonstrated
 
-This project demonstrates practical use of:
+```text
+SELECT, WHERE, DISTINCT, GROUP BY, HAVING, ORDER BY, LIMIT
+INNER JOIN, LEFT JOIN
+CASE, Aggregate Functions, Subqueries, CTEs
+COUNT(), SUM(), AVG(), MIN(), MAX(), ROUND()
+DATE(), YEAR(), DATE_FORMAT(), DATEDIFF(), TIMESTAMPDIFF()
+REGEXP
+Data Validation, Data Quality Checks, Business KPI Analysis
+```
+
+---
+
+# 📈 Power BI & DAX Concepts Demonstrated
 
 ```text
-SELECT
-WHERE
-DISTINCT
-GROUP BY
-HAVING
-ORDER BY
-LIMIT
-
-INNER JOIN
-LEFT JOIN
-
-CASE
-Aggregate Functions
-Subqueries
-CTEs
-
-COUNT()
-SUM()
-AVG()
-MIN()
-MAX()
-ROUND()
-
-DATE()
-YEAR()
-DATE_FORMAT()
-DATEDIFF()
-TIMESTAMPDIFF()
-
-REGEXP
-
-Data Validation
-Data Quality Checks
-Business KPI Analysis
+Power Query — data transformation and preparation
+Data Modeling — relationships between fact and dimension tables
+DAX Measures — Total Revenue, Total Orders, Total Customers,
+               Average Order Value, On-Time Delivery %,
+               Repeat Customers, Retention Rate
+KPI Cards, Bar Charts, Line Charts, Donut Charts,
+Combined Column/Line Visuals
 ```
 
 ---
@@ -655,6 +414,9 @@ Business KPI Analysis
 | MySQL 8 | Database and SQL analysis |
 | MySQL Workbench | SQL development and database management |
 | SQL | Data loading, validation, EDA, and business analysis |
+| Power BI | Interactive dashboard development |
+| Power Query | Data transformation and preparation |
+| DAX | Measures and business KPIs |
 | CSV | Raw dataset format |
 | Git | Version control |
 | GitHub | Project portfolio and code sharing |
@@ -665,138 +427,56 @@ Business KPI Analysis
 
 ## Step 1 — Create the Database
 
-Run:
-
 ```sql
 CREATE DATABASE olist;
 USE olist;
 ```
 
-This is also included in:
-
-```text
-1.Table_Creation.sql
-```
+Also included in `1.Table_Creation.sql`.
 
 ## Step 2 — Create the Tables
-
-Run:
-
-```text
-1.Table_Creation.sql
-```
+Run `1.Table_Creation.sql`.
 
 ## Step 3 — Load the Data
-
-Open:
-
-```text
-2.Data_load.sql
-```
-
-Replace the placeholder CSV paths with your local file paths.
-
-Then execute the script.
+Open `2.Data_load.sql`, replace the placeholder CSV paths with your local file paths, then execute the script.
 
 ## Step 4 — Validate the Data
-
-Run:
-
-```text
-3.Data_Validation.sql
-```
-
-Then run:
-
-```text
-4.Data_Validatiion2.sql
-```
+Run `3.Data_Validation.sql`, then `4.Data_Validatiion2.sql`.
 
 ## Step 5 — Perform Exploratory Analysis
-
-Run:
-
-```text
-5.ExploratoryDataAnalysis.sql
-```
+Run `5.ExploratoryDataAnalysis.sql`.
 
 ## Step 6 — Perform Business Analysis
+Run `6.Business_Analysis.sql`.
 
-Finally, run:
-
-```text
-6.Business_Analysis.sql
-```
+## Step 7 — Open the Power BI Dashboard
+Open `Olist_PowerBI_Dashboard.pbix` in Power BI Desktop, connect to your MySQL instance (or the refreshed dataset), and refresh the data model to explore the Summary, Customers, and Orders pages.
 
 ---
 
 # 📌 Important Dataset Notes
 
 ### `customer_id` vs `customer_unique_id`
-
-`customer_id` identifies a customer record associated with an order.
-
-`customer_unique_id` represents the actual customer identity and is therefore more appropriate when analyzing repeat customers across orders.
-
-For customer-retention analysis, this project uses:
-
-```sql
-customer_unique_id
-```
-
----
+`customer_id` identifies a customer record associated with an order. `customer_unique_id` represents the actual customer identity and is used for repeat-customer analysis in both SQL and Power BI.
 
 ### `order_items`
-
-`order_items` connects:
-
-```text
-Orders → Products → Sellers
-```
-
-An order can contain multiple products/items and potentially multiple sellers.
-
-Therefore, care must be taken to avoid double-counting orders when calculating order-level metrics.
-
----
+Connects Orders → Products → Sellers. An order can contain multiple products/items and potentially multiple sellers, so care must be taken to avoid double-counting orders when calculating order-level metrics.
 
 ### Multiple Payments
-
-An order can have multiple payment records.
-
-Therefore, payment-level calculations should use appropriate aggregation to avoid incorrectly duplicating order-level metrics.
-
----
+An order can have multiple payment records, so payment-level calculations use appropriate aggregation to avoid duplicating order-level metrics.
 
 ### Order Status
-
-The source dataset contains several order statuses, including:
-
-```text
-created
-approved
-invoiced
-processing
-shipped
-delivered
-canceled
-unavailable
-```
-
-The values are treated as source-data values during validation and analysis.
+The source dataset contains several order statuses: `created`, `approved`, `invoiced`, `processing`, `shipped`, `delivered`, `canceled`, `unavailable`. These are treated as source-data values during validation and analysis.
 
 ---
 
 # 📈 Future Improvements
 
-The project can be extended by adding:
-
 - RFM customer segmentation
 - Cohort analysis
-- Customer retention dashboard
+- Additional dashboard drill-through pages (Sellers, Reviews, Product Category deep-dive)
 - SQL views for reusable KPIs
 - Star-schema data modeling
-- Power BI dashboard
 - Automated data-quality checks
 - Executive-level business dashboard
 - Advanced seller-performance scoring
@@ -809,22 +489,14 @@ Through this project, I practiced how to:
 
 - Design a relational database
 - Load CSV data into MySQL
-- Validate real-world datasets
-- Identify data-quality issues
-- Work with multiple related tables
-- Write complex SQL joins
-- Use CTEs and subqueries
-- Perform KPI analysis
-- Analyze customer retention
-- Analyze revenue and sales
-- Evaluate delivery performance
-- Analyze payment behavior
-- Analyze customer reviews
-- Convert SQL results into business insights
+- Validate real-world datasets and identify data-quality issues
+- Write complex SQL joins, CTEs, and subqueries
+- Perform KPI, retention, revenue, delivery, payment, and review analysis
+- Build a Power BI data model and write DAX measures
+- Design an interactive multi-page dashboard
+- Convert SQL and Power BI results into business insights
 
 ---
-
-
 
 # ⭐ Project Workflow Summary
 
@@ -853,8 +525,20 @@ Through this project, I practiced how to:
               └──────────┬──────────┘
                          ▼
               ┌─────────────────────┐
+              │  Power BI Dashboard │
+              └──────────┬──────────┘
+                         ▼
+              ┌─────────────────────┐
               │ Business Insights   │
               └─────────────────────┘
 ```
 
-**From raw data to business decisions using SQL.**
+**From raw data to business decisions using SQL and Power BI.**
+
+---
+
+## 👨‍💻 Author
+
+**Sumit Kalambate**
+
+GitHub: **Sumitkalambate**
